@@ -1,47 +1,83 @@
+"""
+JCL Error Analyzer
+-----------------
+Analyzes mainframe job logs / SYSOUT files and provides
+root cause analysis with suggested fixes.
+
+Author: Bhim Singh
+"""
+
 import re
+import sys
 
-# -------------------------------------------------------------
-#  PYTHON UTILITY: JCL ERROR ANALYZER
-#  AUTHOR: BHIM SINGH (bhimnexus)
-#  DESCRIPTION:
-#     - Reads a JCL sysout/log file
-#     - Detects common ABENDs, JCL errors, missing datasets
-#     - Prints suggestions for RCA
-# -------------------------------------------------------------
-
-ERROR_PATTERNS = {
-    "S0C7": "Data exception – invalid numeric data.",
-    "S0C4": "Protection exception – bad memory reference.",
-    "S322": "Time out – job exceeded allocated CPU time.",
-    "JCL ERROR": "General JCL error – check syntax.",
-    "DATA SET NOT FOUND": "Dataset missing – check DD statements.",
-    "IKJ56500A": "Command error – check TSO/ISPF command.",
-    "IEC070I": "DD statement issue – missing dataset.",
-    "IEC130I": "Invalid volume or UNIT parameter."
+ABEND_MAP = {
+    "S0C7": {
+        "cause": "Data exception – invalid numeric data.",
+        "fix": "Check PIC definitions, COMP fields, and input data."
+    },
+    "S0C4": {
+        "cause": "Protection exception – invalid memory reference.",
+        "fix": "Check subscript usage, pointer logic, and table bounds."
+    },
+    "S322": {
+        "cause": "Time limit exceeded.",
+        "fix": "Optimize logic or increase TIME parameter in JCL."
+    }
 }
 
-def analyze_jcl_output(file_path):
-    print("\n=== JCL ERROR ANALYZER ===\n")
-    
+MESSAGE_MAP = {
+    "IEC": {
+        "cause": "Dataset allocation or access error.",
+        "fix": "Verify dataset name, DISP, volume, and catalog entry."
+    },
+    "IEFC": {
+        "cause": "JCL syntax or parameter error.",
+        "fix": "Review JOB/EXEC/DD statements carefully."
+    },
+    "IKJ": {
+        "cause": "TSO or command execution error.",
+        "fix": "Check command syntax and user permissions."
+    }
+}
+
+def analyze_log(file_path):
+    print("\n=== JCL JOB FAILURE ANALYSIS ===\n")
+
     try:
-        with open(file_path, "r") as f:
-            content = f.read()
+        with open(file_path, "r", errors="ignore") as f:
+            lines = f.readlines()
     except FileNotFoundError:
         print(f"[ERROR] File not found: {file_path}")
         return
 
-    found_any = False
+    issues_found = False
 
-    for code, meaning in ERROR_PATTERNS.items():
-        if re.search(code, content):
-            print(f"[FOUND] {code} → {meaning}")
-            found_any = True
+    for line in lines:
+        # Detect ABENDs
+        for abend in ABEND_MAP:
+            if abend in line:
+                issues_found = True
+                print(f"🔴 ABEND DETECTED: {abend}")
+                print(f"   Cause : {ABEND_MAP[abend]['cause']}")
+                print(f"   Fix   : {ABEND_MAP[abend]['fix']}\n")
 
-    if not found_any:
-        print("No known JCL or ABEND errors detected.")
+        # Detect system messages
+        for msg in MESSAGE_MAP:
+            if msg in line:
+                issues_found = True
+                print(f"🔴 MESSAGE DETECTED: {msg}")
+                print(f"   Cause : {MESSAGE_MAP[msg]['cause']}")
+                print(f"   Fix   : {MESSAGE_MAP[msg]['fix']}\n")
 
-    print("\nAnalysis complete.\n")
+    if not issues_found:
+        print("✅ No known ABENDs or JCL errors detected.")
+        print("ℹ️ Job may have completed successfully or needs manual review.")
+
+    print("\n=== ANALYSIS COMPLETE ===\n")
 
 if __name__ == "__main__":
-    file_path = input("Enter JCL output file path: ")
-    analyze_jcl_output(file_path)
+    if len(sys.argv) != 2:
+        print("Usage: python jcl_error_analyzer.py <job_log_file>")
+        sys.exit(1)
+
+    analyze_log(sys.argv[1])

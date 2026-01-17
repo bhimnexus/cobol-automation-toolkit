@@ -93,7 +93,7 @@ def parse_cobol_fields(cobol_file):
                 elif "COMP" in rest:
                     usage = "COMP"
 
-                fields[name] = {
+                fields[name.upper()] = {
                     "level": level,
                     "pic": pic,
                     "usage": usage
@@ -118,8 +118,8 @@ def parse_compile_listing(listing_file):
         sys.exit(1)
 
     entry_pattern = re.compile(
-        r"^\s*\d+\s+([\w-]+).*OFFSET\s+(\d+)\s+LENGTH\s+(\d+)",
-        re.IGNORECASE
+    r"^\s*(?:\d+\s+)?([\w-]+).*OFFSET\s+(\d+)\s+LENGTH\s+(\d+)",
+    re.IGNORECASE
     )
 
     offset_map = []
@@ -157,7 +157,7 @@ def find_exact_soc7_field(offset, offset_map, cobol_fields):
     for entry in offset_map:
         if entry["start"] <= offset <= entry["end"]:
             field_name = entry["field"]
-            cobol_info = cobol_fields.get(field_name, {})
+            cobol_info = cobol_fields.get(field_name.upper(), {})
 
             print(f"SOC7 OFFSET      : {offset}")
             print(f"FIELD NAME       : {field_name}")
@@ -167,7 +167,7 @@ def find_exact_soc7_field(offset, offset_map, cobol_fields):
                 print(f"PIC              : {cobol_info['pic']}")
                 print(f"USAGE            : {cobol_info['usage']}")
 
-                if cobol_info["usage"] == "DISPLAY" and re.match(r"S?9", cobol_info["pic"]):
+                if cobol_info["usage"] == "DISPLAY" and re.search(r"9", cobol_info["pic"]):
                     print("\nROOT CAUSE:")
                     print("Invalid numeric data in DISPLAY field.")
 
@@ -192,9 +192,9 @@ def main():
     if len(sys.argv) != 4:
         print(
             "Usage:\n"
-            "  python soc7_field_analyzer2.py <job_log> <cobol_src> <compile_listing>\n\n"
+            "  python soc7_field_analyzer_Final.py <job_log> <cobol_src> <compile_listing>\n\n"
             "Example:\n"
-            "  python soc7_field_analyzer2.py "
+            "  python soc7_field_analyzer_Final.py "
             "sample_soc7_job_log.txt sample_cobol_program.cbl sample_compile_listing.txt"
         )
         sys.exit(1)
@@ -206,8 +206,8 @@ def main():
     offset_dec, _ = analyze_job_log(job_log)
     cobol_fields = parse_cobol_fields(cobol_src)
     offset_map = parse_compile_listing(listing)
-    find_exact_soc7_field(offset_dec, offset_map, cobol_fields)
-
+    record_offset = offset_dec if offset_dec < 4096 else offset_dec % 256
+    find_exact_soc7_field(record_offset, offset_map, cobol_fields)
 
 if __name__ == "__main__":
     main()

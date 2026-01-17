@@ -27,9 +27,17 @@ def analyze_job_log(log_file):
         content = f.read()
 
     # Detect SOC7
-    if "SOC7" not in content:
-        print("No SOC7 abend detected.")
-        return None
+    soc7_patterns = [
+    r"S0C7",
+    r"SOC7",
+    r"DATA\s+EXCEPTION",
+    r"COMPLETION\s+CODE\s*=\s*0C7"
+]
+
+if not any(re.search(p, content, re.IGNORECASE) for p in soc7_patterns):
+    print("No SOC7 abend detected.")
+    return None
+
 
     print("SOC7 (Data Exception) detected.")
 

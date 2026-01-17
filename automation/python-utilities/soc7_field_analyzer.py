@@ -34,9 +34,9 @@ def analyze_job_log(log_file):
     r"COMPLETION\s+CODE\s*=\s*0C7"
 ]
 
-if not any(re.search(p, content, re.IGNORECASE) for p in soc7_patterns):
-    print("No SOC7 abend detected.")
-    return None
+    if not any(re.search(p, content, re.IGNORECASE) for p in soc7_patterns):
+        print("No SOC7 abend detected.")
+        return None
 
 
     print("SOC7 (Data Exception) detected.")

@@ -47,3 +47,21 @@ EX 'HLQ.REXXLIB(DATASETCK)'
 - Prevent JCL failures due to missing datasets
 - Lightweight pre-check utility for batch jobs
 
+  ### 🔧 DB2 SQLCODE Analyzer (Python)
+
+A Python utility that analyzes DB2 SQLCODEs and provides
+production-focused explanations, possible causes, and fix suggestions.
+
+**Location:**  
+automation/python-utilities/db2_sqlcode_analyzer.py
+
+**How to run:**
+```bash
+python db2_sqlcode_analyzer.py <SQLCODE>
+```
+
+****Example:****
+python db2_sqlcode_analyzer.py -805
+
+
+

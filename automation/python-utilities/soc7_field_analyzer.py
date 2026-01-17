@@ -42,7 +42,11 @@ def analyze_job_log(log_file):
     print("SOC7 (Data Exception) detected.")
 
     # Try to find offset like X'01A4'
-    offset_match = re.search(r"OFFSET\s*[:=]\s*X'([0-9A-F]+)'", content, re.IGNORECASE)
+    offset_match = re.search(
+        r"OFFSET\s*(?:[:=]?\s*)X'([0-9A-F]+)'",
+        content,
+        re.IGNORECASE
+        )
 
     if offset_match:
         offset = offset_match.group(1)

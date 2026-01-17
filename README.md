@@ -31,5 +31,19 @@ python jcl_error_analyzer.py <job_log_file>
 
 python jcl_error_analyzer.py sample_job_log.txt
 
+### 🔧 Dataset Checker Utility (REXX)
 
+A REXX utility to verify dataset existence and basic accessibility on the mainframe.
+
+**Location:**  
+automation/rexx-scripts/dataset-checker.rexx
+
+**How to run (TSO):**
+
+EX 'HLQ.REXXLIB(DATASETCK)'
+
+**Use cases:**
+- Validate input/output datasets before job execution
+- Prevent JCL failures due to missing datasets
+- Lightweight pre-check utility for batch jobs
 

@@ -206,7 +206,8 @@ def main():
     offset_dec, _ = analyze_job_log(job_log)
     cobol_fields = parse_cobol_fields(cobol_src)
     offset_map = parse_compile_listing(listing)
-    record_offset = offset_dec if offset_dec < 4096 else offset_dec % 256
+    RECORD_LENGTH = 80  # adjust if known from FD / file definition
+    record_offset = offset_dec % RECORD_LENGTH
     find_exact_soc7_field(record_offset, offset_map, cobol_fields)
 
 if __name__ == "__main__":

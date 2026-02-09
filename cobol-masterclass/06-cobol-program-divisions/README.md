@@ -136,8 +136,6 @@ WITH DEBUGGING MODE enables lines marked with D in column 7
 
 ---
 
-### 🔹 **OBJECT-COMPUTER Paragraph**
-
 ### OBJECT-COMPUTER Paragraph
 
 Specifies the computer on which the program will run.
@@ -152,8 +150,6 @@ Usually the same as SOURCE-COMPUTER.
 
 
 ---
-
-### 🔹 **SPECIAL-NAMES Paragraph**
 
 ### SPECIAL-NAMES Paragraph
 
@@ -174,10 +170,7 @@ SPECIAL-NAMES.
     CLASS DIGIT IS '0' THRU '9'.
 ```
 
-
 ---
-
-## ✅ **6. Input-Output Section**
 
 ## 6. Input-Output Section
 
@@ -186,8 +179,6 @@ SPECIAL-NAMES.
 Defines **files** used by the program and how they are controlled.
 
 📌 This section is **mandatory if files are used**.
-
-###🔹 FILE-CONTROL Paragraph
 
 ### FILE-CONTROL Paragraph
 
@@ -206,8 +197,6 @@ FILE-CONTROL.
 ```
 
 ---
-
-### 🔹 **I-O CONTROL Paragraph**
 
 ### I-O CONTROL Paragraph
 
@@ -255,8 +244,6 @@ FD EMP-FILE.
 
 ---
 
-### 🔹 **Working-Storage Section**
-
 ### Working-Storage Section
 
 Used to define:
@@ -276,8 +263,6 @@ WORKING-STORAGE SECTION.
 
 ---
 
-### 🔹 **Linkage Section**
-
 ### Linkage Section
 
 Used to define:
@@ -295,8 +280,6 @@ LINKAGE SECTION.
 ```
 
 ---
-
-## ✅ **8. Procedure Division**
 
 ## 8. Procedure Division
 
@@ -318,8 +301,6 @@ PROCEDURE DIVISION.
 
 ---
 
-## ✅ **9. Program Termination**
-
 ## 9. Program Termination
 
 A COBOL program must end with **one of the following**:
@@ -335,8 +316,6 @@ STOP RUN.
 ```
 
 ---
-
-## ✅ **10. Division Summary Table**
 
 ## 10. Division Summary Table
 
